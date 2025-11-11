@@ -238,8 +238,8 @@ static int cc_init()
 		printk("Reset cause not supported on this SoC\n");
 	}
 
-	disable_clock_loss_reset();
-	force_lf_rcosc();
+	//disable_clock_loss_reset();
+	//force_lf_rcosc();
 
 	gpio_is_ready_dt(&led0);
 	gpio_pin_configure_dt(&led0, GPIO_OUTPUT_ACTIVE);
