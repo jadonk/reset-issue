@@ -47,10 +47,6 @@
 #include <math.h>
 #include <string.h>
 
-#define LOG_LEVEL LOG_LEVEL_DBG
-#include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(resetissue);
-
 static inline uint32_t reg_resetctl(void) { return HWREG(AON_PMCTL_BASE + AON_PMCTL_O_RESETCTL); }
 static inline uint32_t reg_ctl0(void)     { return HWREG(AUX_DDI0_OSC_BASE + DDI_0_OSC_O_CTL0); }
 static inline uint32_t reg_stat0(void)    { return HWREG(AUX_DDI0_OSC_BASE + DDI_0_OSC_O_STAT0); }
@@ -79,7 +75,7 @@ static void send_test_value()
 
 void setled(int on)
 {
-	LOG_DBG("led(%d)", on);
+	printk("led(%d)\n", on);
 	gpio_pin_set_dt(&led0, on);
 }
 
@@ -88,11 +84,11 @@ int main(void)
 	int rc;
 	netdeviceapi = netdevice->api;
 
-	LOG_INF("Reached main()");
+	printk("Reached main()\n");
 
 	k_sleep(K_SECONDS(SLEEP_S));
 
-	LOG_DBG("Woke from first sleep");
+	printk("Woke from first sleep\n");
 
 	send_fd = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
 	__ASSERT(send_fd >= 0, "Failed to open socket for sending data: 0x%08x", send_fd);
@@ -103,19 +99,19 @@ int main(void)
 
 	for (;;) {
 		k_usleep(10);
-		LOG_DBG("Disabling network");
+		printk("Disabling network\n");
 		netdeviceapi->stop(netdevice);
 		rc = pm_device_action_run(uart, PM_DEVICE_ACTION_SUSPEND);
-		LOG_DBG("UART suspend rc=%d", rc);
+		printk("UART suspend rc=%d\n", rc);
 		setled(0);
 		k_sleep(K_SECONDS(SLEEP_S));
 		setled(1);
-		LOG_DBG("Enabling network");
+		printk("Enabling network\n");
 		netdeviceapi->start(netdevice);
 		k_usleep(100); // not sure how long to wait for interface to be "up"
 		rc = pm_device_action_run(uart, PM_DEVICE_ACTION_RESUME);
-		LOG_DBG("UART resume rc=%d", rc);
-		LOG_DBG("Sending test value over network");
+		printk("UART resume rc=%d\n", rc);
+		printk("Sending test value over network\n");
 		send_test_value();
 	}
 
