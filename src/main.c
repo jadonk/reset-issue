@@ -94,6 +94,8 @@ int main(void)
 
 	k_sleep(K_SECONDS(SLEEP_S));
 
+	LOG_DBG("Woke from first sleep");
+
 	send_fd = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
 	__ASSERT(send_fd >= 0, "Failed to open socket for sending data: 0x%08x", send_fd);
 	memset(&send_addr, 0, sizeof(struct sockaddr_in6));
