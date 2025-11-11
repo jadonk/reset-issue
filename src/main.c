@@ -29,8 +29,6 @@
 #include <zephyr/net/net_if.h>
 #include <zephyr/pm/device.h>
 #include <zephyr/pm/device_runtime.h>
-#include <zephyr/dsp/types.h>
-#include <dsp/statistics_functions.h>
 #include <zephyr/shell/shell.h>
 #include <zephyr/shell/shell_uart.h>
 #include <zephyr/net/net_config.h>
