@@ -32,4 +32,7 @@ led(0)
 UART suspend rc=0
 UART resume rc=0
 led(1)
+Setting up ADC
+Setting up ADC sequence
+Reading ADC
 ```

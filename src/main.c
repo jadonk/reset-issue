@@ -116,10 +116,13 @@ int main(void)
 		printk("UART suspend rc=%d\n", rc_s);
 		printk("UART resume rc=%d\n", rc_r);
 		setled(1);
+		printk("Setting up ADC\n");
 		rc = adc_channel_setup_dt(&an_mb1_dt);
 		if(rc < 0) printk("adc_channel_setup_dt(AN_MB1) failed: %d", rc);
+		printk("Setting up ADC sequence\n");
 		rc = adc_sequence_init_dt(&an_mb1_dt, &an_mb1_seq);
 		if(rc != 0) printk("adc_sequence_init_dt(AN_MB1) failed: %d", rc);
+		printk("Reading ADC\n");
 		rc = adc_read_dt(&an_mb1_dt, &an_mb1_seq);
 		if(rc != 0) printk("adc_read_dt(AN_MB1) failed: %d", rc);
 		an_mb1_val = (int32_t)an_mb1_buf;
