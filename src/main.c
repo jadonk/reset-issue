@@ -34,12 +34,6 @@ static const struct device * const netdevice = DEVICE_DT_GET(DT_NODELABEL(ieee80
 static const struct device * const adc = DEVICE_DT_GET(DT_NODELABEL(adc0));
 static const struct adc_dt_spec an_mb1_dt = ADC_DT_SPEC_GET_BY_NAME(DT_PATH(zephyr_user),an_mb1);
 
-void setled(int on)
-{
-	printk("led(%d)\n", on);
-	gpio_pin_set_dt(&led0, on);
-}
-
 static void read_an_mb1()
 {
 	uint16_t an_mb1_buf;
@@ -70,50 +64,15 @@ const char send_msg[] = "TEST";
 int main(void)
 {
 	const struct ieee802154_radio_api * netdeviceapi = netdevice->api;
-	static int send_fd = -1;
-	static struct sockaddr_in6 send_addr;
-	const struct in6_addr * my_ll_addr;
-	char astr[INET6_ADDRSTRLEN];
 
-	setled(0);
 	printk("Reached main()\n");
-
-	memset(&send_addr, 0, sizeof(struct sockaddr_in6));
-	send_addr.sin6_family = AF_INET6;
-	send_addr.sin6_port = htons(9999);
-	inet_pton(AF_INET6, SEND_IP, &send_addr.sin6_addr);
-	my_ll_addr = net_if_ipv6_get_ll(net_if_get_default(), NET_ADDR_ANY_STATE);
-	if (my_ll_addr && inet_ntop(AF_INET6, my_ll_addr, astr, sizeof(astr))) {
-		printk("Link local IPv6: %s\n", astr);
-	}
-
-	printk("Sleep 1 second\n");
-	k_sleep(K_SECONDS(1));
-	setled(1);
 	read_an_mb1();
-	setled(0);
 	printk("Stop network device\n");
 	netdeviceapi->stop(netdevice);
-	printk("Sleep 1 second\n");
-	k_sleep(K_SECONDS(1));
 	read_an_mb1();
 	printk("Start network device\n");
 	netdeviceapi->start(netdevice);
 	read_an_mb1();
-	sendto(send_fd, send_msg, strlen(send_msg), 0,
-		(const struct sockaddr *) &send_addr,
-		sizeof(send_addr));
-
 	printk("Exiting main()\n");
 	return(0);
 }
-
-static int led_init()
-{
-	gpio_is_ready_dt(&led0);
-	gpio_pin_configure_dt(&led0, GPIO_OUTPUT_ACTIVE);
-	setled(1);
-	return 0;
-}
-
-SYS_INIT(led_init, APPLICATION, 0);
