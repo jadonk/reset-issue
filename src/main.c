@@ -92,10 +92,14 @@ int main(void)
 	setled(1);
 	read_an_mb1();
 	setled(0);
+	printk("Stop network device\n");
 	netdeviceapi->stop(netdevice);
+	printk("Sleep 1 second\n");
 	k_sleep(K_SECONDS(1));
 	read_an_mb1();
+	printk("Start network device\n");
 	netdeviceapi->start(netdevice);
+	read_an_mb1();
 	sendto(send_fd, send_msg, strlen(send_msg), 0,
 		(const struct sockaddr *) &send_addr,
 		sizeof(send_addr));
