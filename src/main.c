@@ -22,6 +22,10 @@
 #include <zephyr/sys/printk.h>
 #include <math.h>
 #include <string.h>
+#include <zephyr/net/net_ip.h>
+#include <zephyr/net/net_if.h>
+#include <zephyr/net/socket.h>
+#include <zephyr/net/udp.h>
 #include <zephyr/net/ieee802154_radio.h>
 
 static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(DT_ALIAS(led0), gpios);
@@ -60,20 +64,41 @@ static void read_an_mb1()
 	printk("an_mb1_val: %d\n", an_mb1_val);
 }
 
+#define SEND_IP "ff02::1"
+const char send_msg[] = "TEST";
+
 int main(void)
 {
 	const struct ieee802154_radio_api * netdeviceapi = netdevice->api;
+	static int send_fd = -1;
+	static struct sockaddr_in6 send_addr;
+	const struct in6_addr * my_ll_addr;
+	char astr[INET6_ADDRSTRLEN];
+
 	setled(0);
 	printk("Reached main()\n");
 
+	memset(&send_addr, 0, sizeof(struct sockaddr_in6));
+	send_addr.sin6_family = AF_INET6;
+	send_addr.sin6_port = htons(9999);
+	inet_pton(AF_INET6, SEND_IP, &send_addr.sin6_addr);
+	my_ll_addr = net_if_ipv6_get_ll(net_if_get_default(), NET_ADDR_ANY_STATE);
+	if (my_ll_addr && inet_ntop(AF_INET6, my_ll_addr, astr, sizeof(astr))) {
+		printk("Link local IPv6: %s", astr);
+	}
+
+	printk("Sleep 1 second\n");
 	k_sleep(K_SECONDS(1));
 	setled(1);
 	read_an_mb1();
 	setled(0);
 	netdeviceapi->stop(netdevice);
 	k_sleep(K_SECONDS(1));
-	netdeviceapi->start(netdevice);
 	read_an_mb1();
+	netdeviceapi->start(netdevice);
+	sendto(send_fd, send_msg, strlen(send_msg), 0,
+		(const struct sockaddr *) &send_addr,
+		sizeof(send_addr));
 
 	printk("Exiting main()\n");
 	return(0);
