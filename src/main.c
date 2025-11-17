@@ -51,16 +51,16 @@ static void read_an_mb1()
 	int rc;
 	printk("Setting up ADC\n");
 	rc = adc_channel_setup_dt(&an_mb1_dt);
-	if(rc < 0) printk("adc_channel_setup_dt(AN_MB1) failed: %d", rc);
+	if(rc < 0) printk("adc_channel_setup_dt(AN_MB1) failed: %d\n", rc);
 	printk("Setting up ADC sequence\n");
 	rc = adc_sequence_init_dt(&an_mb1_dt, &an_mb1_seq);
-	if(rc != 0) printk("adc_sequence_init_dt(AN_MB1) failed: %d", rc);
+	if(rc != 0) printk("adc_sequence_init_dt(AN_MB1) failed: %d\n", rc);
 	printk("Reading ADC\n");
 	rc = adc_read_dt(&an_mb1_dt, &an_mb1_seq);
-	if(rc != 0) printk("adc_read_dt(AN_MB1) failed: %d", rc);
+	if(rc != 0) printk("adc_read_dt(AN_MB1) failed: %d\n", rc);
 	an_mb1_val = (int32_t)an_mb1_buf;
 	rc = adc_raw_to_millivolts_dt(&an_mb1_dt, &an_mb1_val);
-	if(rc != 0) printk("adc_raw_to_millivolts(AN_MB1) failed: %d", rc);
+	if(rc != 0) printk("adc_raw_to_millivolts(AN_MB1) failed: %d\n", rc);
 	printk("an_mb1_val: %d\n", an_mb1_val);
 }
 
@@ -84,7 +84,7 @@ int main(void)
 	inet_pton(AF_INET6, SEND_IP, &send_addr.sin6_addr);
 	my_ll_addr = net_if_ipv6_get_ll(net_if_get_default(), NET_ADDR_ANY_STATE);
 	if (my_ll_addr && inet_ntop(AF_INET6, my_ll_addr, astr, sizeof(astr))) {
-		printk("Link local IPv6: %s", astr);
+		printk("Link local IPv6: %s\n", astr);
 	}
 
 	printk("Sleep 1 second\n");
