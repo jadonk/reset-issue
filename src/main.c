@@ -67,11 +67,7 @@ int main(void)
 
 	printk("Reached main()\n");
 	read_an_mb1();
-	printk("Stop network device\n");
 	netdeviceapi->stop(netdevice);
-	read_an_mb1();
-	printk("Start network device\n");
-	netdeviceapi->start(netdevice);
 	read_an_mb1();
 	printk("Exiting main()\n");
 	return(0);
