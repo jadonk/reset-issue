@@ -1,0 +1,12 @@
+/*
+ * Copyright (c) 2025, Jason Kridner, BeagleBoard.org Foundation
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/ {
+	zephyr,user {
+		io-channels = <&adc0 9>, <&adc0 10>;
+		io-channel-names = "an_mb1", "an_mb2";
+	};
+};
