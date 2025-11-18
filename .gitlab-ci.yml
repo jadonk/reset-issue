@@ -1,0 +1,17 @@
+image: zephyrprojectrtos/zephyr-build:v0.28.6
+
+build:
+  stage: build
+  before_script:
+    - west init -l .
+    - west update
+    - west zephyr-export
+    - pip3 install -r ../zephyr/scripts/requirements-base.txt
+    - pip3 install -r ../zephyr/scripts/requirements-extras.txt
+    - pip3 install -r ../bootloader/mcuboot/scripts/requirements.txt
+  script:
+    - west build -b beagleconnect_freedom -p always .
+  artifacts:
+    name: zephyr-cc1352-issues
+    paths:
+      - build
