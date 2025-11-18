@@ -102,6 +102,8 @@ int main(void) {
       LOG_INF("AN_MB1 raw: %u", mb1_buf);
     }
 
+    return 0;
+
     /* --- AN_MB2 read: 256 samples --- */
     LOG_INF("AN_MB2 read, %d samples", SAMPLES);
 

@@ -15,7 +15,7 @@ west flash
 
 ## Issue
 
-```sh
+```
 :00:00.000,915] <dbg> pm: pm_system_suspend: No PM operations done.
 [00:00:00.008,239] <dbg> pm: pm_system_suspend: No PM operations done.
 [00:00:00.019,134] <dbg> net_ieee802154: ieee802154_init: (0x200023b8): Initializing IEEE 802.15.4 stack on iface 0x20001780
@@ -38,3 +38,26 @@ west flash
 ```
 
 Note that it is hung here at the end
+
+With networking disabled (added a quick exit after the first adc read):
+
+```
+[00:00:05.022,277] <inf> adc_repro: AN_MB1 read
+[00:00:05.027,557] <dbg> adc_repro: main: Before adc_channel_setup_dt(an_mb1)
+[00:00:05.035,522] <dbg> adc_cc13xx_cc26xx: adc_cc13xx_cc26xx_channel_setup: Setup 9 acq time 9
+[00:00:05.045,166] <dbg> adc_repro: main: After adc_channel_setup_dt(an_mb1) rc=0
+[00:00:05.053,497] <dbg> adc_repro: main: Before adc_sequence_init_dt(an_mb1)
+[00:00:05.061,492] <dbg> adc_repro: main: After adc_sequence_init_dt(an_mb1) rc=0
+[00:00:05.069,824] <dbg> adc_repro: main: Before adc_read_dt(an_mb1)
+[00:00:05.076,995] <inf> adc_repro: [an_mb1] PRIMASK=0 BASEPRI=0x00
+[00:00:05.084,106] <inf> adc_repro: [an_mb1] NVIC->ISER[1]=0x00000003 ISPR[1]=0x00000004
+[00:00:05.093,078] <inf> adc_repro: [an_mb1] ADC IRQ 32 enabled=1 pending=0
+[00:00:05.100,891] <inf> adc_repro: [an_mb1] AUX_EVCTL.EVTOMCUFLAGS = 0x00000000
+[00:00:05.109,161] <inf> adc_repro: [an_mb1] AUX_ANAIF.ADCCTL       = 0x00000000
+[00:00:05.117,584] <dbg> adc_cc13xx_cc26xx: adc_cc13xx_cc26xx_isr: ISR flags 0x00000480 fifo 0x00000000
+[00:00:05.127,899] <dbg> adc_cc13xx_cc26xx: adc_cc13xx_cc26xx_isr: ADC buf 20003382 val 3105
+[00:00:05.137,268] <dbg> adc_cc13xx_cc26xx: adc_cc13xx_cc26xx_isr: ISR flags 0x00000400 fifo 0x00000001
+[00:00:05.147,613] <dbg> adc_repro: main: After adc_read_dt(an_mb1) rc=0
+[00:00:05.155,120] <inf> adc_repro: AN_MB1 raw: 3105
+```
+
