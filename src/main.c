@@ -13,6 +13,11 @@
 #include <zephyr/irq.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <ti/devices/DeviceFamily.h>
+#include DeviceFamily_constructPath(inc/hw_aux_evctl.h)
+#include DeviceFamily_constructPath(inc/hw_aux_anaif.h)
+#include DeviceFamily_constructPath(inc/hw_memmap.h)
+#include DeviceFamily_constructPath(inc/hw_types.h)
 
 LOG_MODULE_REGISTER(adc_repro, LOG_LEVEL_DBG);
 
@@ -41,6 +46,14 @@ static void dump_irq_state(const char *tag) {
           ispr);
   LOG_INF("[%s] ADC IRQ %d enabled=%d pending=%d", tag, ADC_IRQ,
           irq_is_enabled(ADC_IRQ), (ispr & bit) ? 1 : 0);
+}
+
+static void dump_aux_adc_flags(const char *tag) {
+  uint32_t evflags = HWREG(AUX_EVCTL_BASE + AUX_EVCTL_O_EVTOMCUFLAGS);
+  uint32_t adcctl = HWREG(AUX_ANAIF_BASE + AUX_ANAIF_O_ADCCTL);
+
+  LOG_INF("[%s] AUX_EVCTL.EVTOMCUFLAGS = 0x%08x", tag, evflags);
+  LOG_INF("[%s] AUX_ANAIF.ADCCTL       = 0x%08x", tag, adcctl);
 }
 
 int main(void) {
@@ -81,6 +94,7 @@ int main(void) {
 
     LOG_DBG("Before adc_read_dt(an_mb1)");
     dump_irq_state("an_mb1");
+    dump_aux_adc_flags("an_mb1");
     r = adc_read_dt(&an_mb1_dt, &mb1_seq);
     LOG_DBG("After adc_read_dt(an_mb1) rc=%d", r);
 
