@@ -36,5 +36,8 @@ jobs:
         run: |
           west init -l .
           west update
+          west zephyr-export
+          pip3 install -r ../zephyr/scripts/requirements-base.txt
+          pip3 install -r ../zephyr/scripts/requirements-extras.txt
           west build -b beagleconnect_freedom -p always .
 
