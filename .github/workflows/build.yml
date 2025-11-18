@@ -34,7 +34,7 @@ jobs:
 
       - name: Build issue for BeagleConnect Freedom
         run: |
-          west init -l ..
+          west init -l .
           west update
           west build -b beagleconnect_freedom -p always .
 
