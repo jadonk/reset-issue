@@ -36,14 +36,14 @@ static void dump_irq_state(const char *tag) {
   uint32_t iser = NVIC->ISER[idx];
   uint32_t ispr = NVIC->ISPR[idx];
 
-  LOG_INF("[%s] PRIMASK=%u BASEPRI=0x%02x", log_strdup(tag), primask, basepri);
-  LOG_INF("[%s] NVIC->ISER[%u]=0x%08x ISPR[%u]=0x%08x", log_strdup(tag), idx,
-          iser, idx, ispr);
-  LOG_INF("[%s] ADC IRQ %d enabled=%d pending=%d", log_strdup(tag), ADC_IRQ,
+  LOG_INF("[%s] PRIMASK=%u BASEPRI=0x%02x", tag, primask, basepri);
+  LOG_INF("[%s] NVIC->ISER[%u]=0x%08x ISPR[%u]=0x%08x", tag, idx, iser, idx,
+          ispr);
+  LOG_INF("[%s] ADC IRQ %d enabled=%d pending=%d", tag, ADC_IRQ,
           irq_is_enabled(ADC_IRQ), (ispr & bit) ? 1 : 0);
 }
 
-void main(void) {
+int main(void) {
   int r;
   uint16_t mb1_buf;
   uint16_t mb2_buf;
@@ -61,7 +61,7 @@ void main(void) {
 
   if (!device_is_ready(adc)) {
     LOG_ERR("ADC device not ready");
-    return;
+    return -1;
   }
 
   while (1) {
@@ -118,4 +118,6 @@ void main(void) {
       // k_sleep(K_MSEC(1));
     }
   }
+
+  return 0;
 }
