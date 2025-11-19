@@ -19,7 +19,7 @@
 #include DeviceFamily_constructPath(inc/hw_memmap.h)
 #include DeviceFamily_constructPath(inc/hw_types.h)
 
-LOG_MODULE_REGISTER(adc_repro, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(adc_repro, LOG_LEVEL_INF);
 
 #define SAMPLES 256
 
